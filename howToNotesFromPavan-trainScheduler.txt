@@ -1,0 +1,17 @@
+also see 7.3 timesheet-logic.js
+
+
+// 1st train: 3:00 am
+// interval: 3 minutes
+// current time: 3:16
+// how many minutes away is the train?
+// what time will next train arrive?
+
+
+16 - 00 = 16 <-- currrentTime - timeOfFirstTrain = offsetFromFirstTrain
+
+16 % 3 = 1 <-- offsetFromFirstTrain % intervalBetweenTrains = minutesSincePreviousTrain
+
+3 - 1 = 2 minutes away <-- intervalBetweenTrains - minutesSincePreviousTrain = minutesUntilNextTrain
+
+2 + 3:16 = 3:18 <-- minutesUntilNextTrain + currentTime = TimeOfNextTrain

@@ -14,8 +14,6 @@ firebase.initializeApp(config);
 var db = firebase.database();
 
 
-
-
 $(document).on('click', '#add-train-btn', function(event) {
 	event.preventDefault();
 	var train = $('#train-name-input').val().trim();
@@ -42,22 +40,46 @@ db.ref().on("value", function(snapshot) {
 	var trainKeys = Object.keys(sv.TrainsDB);
 
 	// console.log("The keys to the train objects are: " + trainKeys);
-
-	// var key1 = trainKeys[0];
-	// console.log("the first key is: " + key1);
-
-	// console.log(trains[trainKeys[0]]);
 	// console.log(trains[trainKeys[0]].destination);
+	$("#schedule > tbody").empty();
 
 	for (var i = 0; i < trainKeys.length; i++) {
-		console.log(trains[trainKeys[i]].train + " is headed to " + trains[trainKeys[i]].destination);
+
+		var crntTime = moment(crntTime);
+		console.log("the current time is: " + moment(crntTime).format("hh:mm"));
+
+		var tfreq = trains[trainKeys[i]].frequency;
+		console.log("frequency for " + trains[trainKeys[i]].train + "is " + tfreq);
+
+		var timeOfFirstTrain = trains[trainKeys[i]].initialTime;
+		console.log(timeOfFirstTrain);
+
+		var timeOfFirstConverted = moment(timeOfFirstTrain, "hh:mm").subtract(1, "years");
+		console.log("firstTimeConverted is: " + timeOfFirstConverted);
+
+		var offsetFromFirstTime = moment().diff(moment(timeOfFirstConverted), "minutes");
+		console.log("Difference between current-time and time-of-first-train is: " + offsetFromFirstTime);
+
+		var minutesSincePreviousTrain = offsetFromFirstTime % tfreq;
+		console.log("It's been " + minutesSincePreviousTrain + " minutes since the previous train.");
+
+		var minutesUntilNextTrain = tfreq - minutesSincePreviousTrain;
+		console.log("The next train will arrive in " + minutesUntilNextTrain + " minutes.");
+
+		var timeOfNextTrain = moment().add(minutesUntilNextTrain, "minutes");
+		console.log("The next train is due at " + moment(timeOfNextTrain).format("hh:mm"));
+
+
+
+		$("#schedule > tbody").append("<tr><td>" + trains[trainKeys[i]].train + "</td><td>" + trains[trainKeys[i]].destination + "</td><td>" + trains[trainKeys[i]].frequency + "</td><td>" + moment(timeOfNextTrain).format("hh:mm") + "</td><td>" + minutesUntilNextTrain + "</td></tr>");
 	}
 
-
-	// trainDB.map( function(record) {
-	// 	console.log(record);
-	// })
 });
+
+
+
+
+
 
 
 
